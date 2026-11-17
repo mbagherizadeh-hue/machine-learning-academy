@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>جزوه رگرسیون لجستیک | دکتر مهدی باقری‌زاده</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<style>
+:root{--bg:#fff;--tx:#1c1917;--mu:#78716c;--or:#ea7a1a;--orl:#fff1e3;--bl:#1e3a5f;--bd:#e7e5e4}
+*{box-sizing:border-box}body{margin:0;font-family:Vazirmatn,Tahoma,sans-serif;background:var(--bg);color:var(--tx);line-height:2.1;font-size:18px}
+header{background:var(--orl);border-bottom:3px solid var(--or);padding:18px clamp(14px,4vw,48px)}
+header h1{margin:0;color:var(--bl);font-size:1.7em}header p{margin:0;color:var(--mu)}
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+button{font:inherit;font-size:14px;background:var(--or);color:#fff;border:0;border-radius:9px;padding:2px 14px;cursor:pointer}button.s{background:#fff;color:var(--tx);border:1px solid var(--bd)}
+#wrap{display:flex;align-items:flex-start}
+#toc{width:290px;flex-shrink:0;position:sticky;top:0;height:100vh;overflow:auto;padding:16px;border-inline-end:1px solid var(--bd);font-size:15px}
+#toc a{display:block;padding:3px 10px;border-radius:8px;color:var(--tx);text-decoration:none;line-height:1.9}#toc a:hover{background:var(--orl);color:var(--or)}
+article{flex:1;min-width:0;max-width:900px;margin:auto;padding:20px clamp(14px,4vw,48px) 80px}
+section{margin-bottom:48px}h2{color:var(--bl);border-bottom:2px solid var(--or);padding-bottom:4px;scroll-margin-top:12px}
+h3{color:var(--or);margin-top:1.6em;scroll-margin-top:12px}h4{color:var(--bl);margin:1.2em 0 0}
+table{border-collapse:collapse;margin:14px 0;display:block;overflow-x:auto;break-inside:avoid}td,th{border:1px solid var(--bd);padding:3px 14px;text-align:center}th{background:var(--orl)}
+.katex-display{overflow-x:auto;overflow-y:hidden;direction:ltr;break-inside:avoid}
+.cw{position:relative;break-inside:avoid;margin:14px 0}.cw pre{direction:ltr;text-align:left;background:#1c1917;color:#fed7aa;padding:14px;border-radius:12px;overflow-x:auto;margin:0;font-size:15px;line-height:1.6}
+.cw button{position:absolute;top:6px;left:6px;font-size:12px}
+.nav{display:flex;justify-content:space-between;margin-top:20px}.todo{background:var(--orl);border:1px dashed var(--or);border-radius:12px;padding:10px 16px}
+footer{text-align:center;color:var(--mu);margin-top:40px;border-top:1px solid var(--bd);padding-top:16px}
+body.teach{font-size:26px}body.teach #toc,body.teach header p,body.teach .tools .opt{display:none}
+body.hide #toc{display:none}
+@media(max-width:800px){#wrap{display:block}#toc{position:static;width:auto;height:auto;max-height:230px;border:0;border-bottom:1px solid var(--bd)}}
+@media print{header .tools,#toc,.nav,.cw button,#up{display:none!important}body{font-size:12pt}header{background:none}article{max-width:none;padding:0}h2,h3,h4{break-after:avoid}p,li{orphans:3;widows:3}pre{white-space:pre-wrap;break-inside:avoid}.todo{display:none}}
+</style></head><body>
+<header><h1>جزوه جامع درس یادگیری ماشین — رگرسیون لجستیک (Logistic Regression)</h1><p>تهیه و تدریس: دکتر مهدی باقری‌زاده</p>
+<div class="tools"><button class="s" onclick="document.body.classList.toggle('hide')">فهرست مطالب</button><button onclick="document.body.classList.toggle('teach')">حالت تدریس</button><button class="s" onclick="print()">چاپ جزوه / ذخیره PDF</button><a href="/" style="align-self:center;font-size:14px">← صفحه اصلی</a></div></header>
+<div id="wrap"><nav id="toc"></nav><article id="art"></article></div>
+<button id="up" onclick="scrollTo({top:0,behavior:'smooth'})" style="position:fixed;bottom:16px;left:16px">↑ ابتدای صفحه</button>
+<script src="sections/s1.js"></script>
+<script src="sections/s2.js"></script>
+<script src="sections/s3.js"></script>
+<script src="sections/s4.js"></script>
+<script src="sections/s5.js"></script>
+<script src="sections/s6.js"></script>
+<script src="sections/s7.js"></script>
+<script src="sections/s8.js"></script>
+<script src="sections/s9.js"></script>
+<script src="sections/s9b.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script>
+const T=['آشنایی با مسئله دسته‌بندی (Classification)','معرفی مدل Logistic Regression','تخمین احتمال و تعیین کلاس (Estimating Probabilities & Threshold)','آموزش مدل Logistic Regression','الگوریتم Gradient Descent در Logistic Regression','Decision Boundary (مرز تصمیم‌گیری)','Logistic Regression با چند ویژگی (Multiple Features)','Softmax Regression برای دسته‌بندی چندکلاسه','پیاده‌سازی Logistic Regression با Python و Scikit-Learn'];
+const N=['اول','دوم','سوم','چهارم','پنجم','ششم','هفتم','هشتم','نهم'],S=window.S||{};
+let toc='',h='';
+T.forEach((t,i)=>{const k=i+1;toc+=`<a href="#sec${k}">بخش ${N[i]}: ${t}</a>`;
+ h+=`<section id="sec${k}">${S[k]||`<h2>بخش ${N[i]}: ${t}</h2><p class="todo">متن این بخش هنوز به سایت اضافه نشده است.</p>`}<div class="nav"><button class="s" ${k>1?`onclick="location.hash='sec${k-1}'"`:'disabled'}>→ بخش قبلی</button><button class="s" ${k<9?`onclick="location.hash='sec${k+1}'"`:'disabled'}>بخش بعدی ←</button></div></section>`});
+$toc=document.getElementById('toc');$toc.innerHTML=toc;document.getElementById('art').innerHTML=h+'<footer>دکتر مهدی باقری‌زاده<br>درس یادگیری ماشین<br>مبحث رگرسیون لجستیک</footer>';
+document.querySelectorAll('.cw').forEach(w=>{const b=document.createElement('button');b.textContent='Copy';b.onclick=()=>navigator.clipboard.writeText(w.querySelector('pre').innerText).then(()=>{b.textContent='کپی شد ✓';setTimeout(()=>b.textContent='Copy',1500)});w.prepend(b)});
+addEventListener('load',()=>renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}]}));
+</script></body></html>

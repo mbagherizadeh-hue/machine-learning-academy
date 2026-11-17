@@ -1,0 +1,12 @@
+{
+  "name": "machine-learning-academy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "آموزش تعاملی یادگیری ماشین - Logistic Regression",
+  "license": "MIT",
+  "scripts": {
+    "start": "npx --yes serve . -l 3000"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
