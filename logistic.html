@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Machine Learning Academy | آموزش تعاملی یادگیری ماشین</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fafaf9;--card:#fff;--tx:#1c1917;--mu:#78716c;--or:#ea7a1a;--orl:#fff1e3;--bl:#1e3a5f;--bd:#e7e5e4;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#171412;--card:#221e1b;--tx:#f5f5f4;--mu:#a8a29e;--orl:#3a2615;--bl:#8db4e8;--bd:#3a3531}}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;font-family:Vazirmatn,Tahoma,sans-serif;background:var(--bg);color:var(--tx);line-height:2;font-size:17px}
+#app{display:flex;min-height:100vh}
+aside{width:270px;background:var(--card);border-inline-end:1px solid var(--bd);padding:16px;position:sticky;top:0;height:100vh;overflow:auto;flex-shrink:0}
+aside h1{font-size:16px;margin:0 0 4px;color:var(--or)}aside small{color:var(--mu)}
+aside a{display:block;padding:4px 10px;border-radius:8px;cursor:pointer;font-size:14px;color:var(--tx);line-height:1.8}
+aside a:hover,aside a.on{background:var(--orl);color:var(--or)}aside a.done::after{content:" ✓";color:#16a34a}
+aside .g{font-size:12px;color:var(--mu);margin:12px 0 2px}
+main{flex:1;min-width:0;padding:24px clamp(14px,4vw,56px) 80px;max-width:1000px;margin:auto}
+.bar{height:6px;background:var(--bd);border-radius:9px;margin:8px 0}.bar i{display:block;height:100%;background:var(--or);border-radius:9px;transition:.4s}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:18px 22px;margin:16px 0}
+.card.k{border-inline-start:5px solid var(--or)}
+h2{font-size:1.7em;margin:.2em 0;color:var(--bl)}h3{margin:.3em 0;color:var(--or)}
+.f{direction:ltr;text-align:center;font-family:'Times New Roman',serif;font-style:italic;font-size:1.3em;background:var(--orl);padding:8px;border-radius:10px;margin:10px 0;overflow-x:auto}
+.f b{font-style:normal}
+table{border-collapse:collapse;width:100%;margin:10px 0;display:block;overflow-x:auto}td,th{border:1px solid var(--bd);padding:4px 12px;text-align:center}th{background:var(--orl)}
+button,select{font:inherit;background:var(--or);color:#fff;border:0;border-radius:9px;padding:4px 16px;cursor:pointer}button.s{background:var(--card);color:var(--tx);border:1px solid var(--bd)}
+input[type=range]{width:100%;accent-color:var(--or);direction:ltr}
+svg{width:100%;height:auto;background:var(--card);border:1px solid var(--bd);border-radius:12px;direction:ltr}
+svg text{fill:var(--mu);font-size:11px;font-family:Vazirmatn}
+.out{font-size:1.4em;font-weight:800;color:var(--or);direction:ltr;display:inline-block}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center}.flow span{background:var(--orl);border:1px solid var(--or);border-radius:10px;padding:2px 12px;direction:ltr;font-size:15px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.nav{display:flex;justify-content:space-between;margin-top:24px;gap:8px}
+pre{direction:ltr;text-align:left;background:#1c1917;color:#fed7aa;padding:14px;border-radius:12px;overflow-x:auto;font-size:14px;line-height:1.6}
+.opt{display:block;width:100%;text-align:start;margin:4px 0;background:var(--card);color:var(--tx);border:1px solid var(--bd)}.opt.ok{background:#16a34a;color:#fff}.opt.no{background:#dc2626;color:#fff}
+.chip{display:inline-block;background:var(--bd);border-radius:20px;padding:0 12px;margin:3px;font-size:14px;color:var(--mu)}
+.top{display:none;gap:8px;margin-bottom:8px}
+body.pres aside{display:none}body.pres{font-size:24px}body.pres main{max-width:1300px}
+@media(max-width:800px){#app{display:block}aside{position:static;width:auto;height:auto;max-height:190px}}
+</style>
+</head>
+<body>
+<div id="app"><aside id="side"></aside><main id="main"></main></div>
+<script>
+const $=s=>document.querySelector(s);
+const sg=t=>1/(1+Math.exp(-t));
+let done={};try{done=JSON.parse(localStorage.getItem('mla')||'{}')}catch(e){}
+const save=()=>{try{localStorage.setItem('mla',JSON.stringify(done))}catch(e){}};
+// ---------- SVG helper ----------
+function plot(id,W,H,xr,yr,fns,extra=''){ // fns:[{f,c}]
+ const X=x=>40+(x-xr[0])/(xr[1]-xr[0])*(W-60),Y=y=>H-25-(y-yr[0])/(yr[1]-yr[0])*(H-45);
+ let s=`<svg viewBox="0 0 ${W} ${H}" id="${id}"><line x1="40" y1="${Y(Math.max(yr[0],0))}" x2="${W-20}" y2="${Y(Math.max(yr[0],0))}" stroke="#a8a29e"/><line x1="${X(Math.max(xr[0],0))}" y1="20" x2="${X(Math.max(xr[0],0))}" y2="${H-25}" stroke="#a8a29e"/>`;
+ for(let x=Math.ceil(xr[0]);x<=xr[1];x+=Math.ceil((xr[1]-xr[0])/8))s+=`<text x="${X(x)}" y="${H-8}" text-anchor="middle">${x}</text>`;
+ for(const g of fns){let d='';for(let i=0;i<=200;i++){const x=xr[0]+i*(xr[1]-xr[0])/200,y=g.f(x);if(y<yr[0]-1||y>yr[1]+1)continue;d+=(d?'L':'M')+X(x).toFixed(1)+' '+Y(y).toFixed(1)}s+=`<path d="${d}" fill="none" stroke="${g.c}" stroke-width="3"/>`}
+ return {X,Y,svg:s+extra+'</svg>'};
+}
+// ---------- Labs ----------
+function slider(l,min,max,step,v,id){return `<label>${l}: <b id="${id}v">${v}</b><input type=range id="${id}" min=${min} max=${max} step=${step} value=${v}></label>`}
+const labs={
+sigmoid(){
+ $('#lab').innerHTML=slider('t',-8,8,0.1,0,'t')+`<div>σ(t) = <span class=out id=so></span></div><div id=sc></div>`;
+ const up=()=>{const t=+$('#t').value;$('#tv').textContent=t;$('#so').textContent=sg(t).toFixed(4);
+  const p=plot('a',640,300,[-8,8],[0,1],[{f:sg,c:'#1e3a5f'}]);
+  $('#sc').innerHTML=p.svg.replace('</svg>',`<line x1="${p.X(t)}" x2="${p.X(t)}" y1="${p.Y(0)}" y2="${p.Y(sg(t))}" stroke="#ea7a1a" stroke-dasharray="4"/><circle cx="${p.X(t)}" cy="${p.Y(sg(t))}" r="8" fill="#ea7a1a"/></svg>`)};
+ $('#t').oninput=up;up()},
+thresh(){
+ $('#lab').innerHTML=slider('احتمال پیش‌بینی‌شده p̂',0,1,0.01,0.7,'p')+slider('آستانه (Threshold)',0.05,0.95,0.05,0.5,'h')+`<p>نتیجه: <span class=out id=r></span></p><p id=rn style="color:var(--mu)"></p>`;
+ const up=()=>{const p=+$('#p').value,h=+$('#h').value;$('#pv').textContent=p;$('#hv').textContent=h;const c=p>=h?1:0;
+  $('#r').textContent=c?'ŷ = 1 (قبول)':'ŷ = 0 (مردود)';$('#rn').textContent=`چون ${p} ${c?'≥':'<'} ${h}. آستانه کمتر ← پیش‌بینی «قبول» بیشتر (False Positive بیشتر)؛ آستانه بیشتر ← محتاط‌تر (False Negative بیشتر).`};
+ $('#p').oninput=$('#h').oninput=up;up()},
+logloss(){
+ $('#lab').innerHTML=`<label>جواب واقعی y: <select id=y><option>1</option><option>0</option></select></label>`+slider('p̂',0.01,0.99,0.01,0.9,'p')+`<p>Cost = <span class=out id=c></span></p><div id=lc></div>`;
+ const up=()=>{const y=+$('#y').value,p=+$('#p').value;$('#pv').textContent=p;const f=q=>y?-Math.log(q):-Math.log(1-q);$('#c').textContent=f(p).toFixed(4);
+  const g=plot('b',640,300,[0,1],[0,5],[{f,c:'#1e3a5f'}]);
+  $('#lc').innerHTML=g.svg.replace('</svg>',`<circle cx="${g.X(p)}" cy="${g.Y(Math.min(5,f(p)))}" r="8" fill="#ea7a1a"/></svg>`)};
+ $('#y').onchange=$('#p').oninput=up;up()},
+gd(){
+ $('#lab').innerHTML=slider('نرخ یادگیری η',0.02,1.05,0.01,0.2,'e')+`<button id=go>اجرای Gradient Descent</button> <button class=s id=rs>شروع مجدد</button><p>θ = <span class=out id=th></span> | J(θ) = <span class=out id=jv></span></p><div id=gc></div>`;
+ let th=-4,tm;const J=t=>t*t/2,show=()=>{const g=plot('g',640,280,[-5,5],[0,13],[{f:J,c:'#1e3a5f'}]);
+  $('#gc').innerHTML=g.svg.replace('</svg>',`<circle cx="${g.X(th)}" cy="${g.Y(J(th))}" r="9" fill="#ea7a1a"/></svg>`);$('#th').textContent=th.toFixed(3);$('#jv').textContent=J(th).toFixed(3);$('#ev').textContent=$('#e').value};
+ $('#go').onclick=()=>{clearInterval(tm);tm=setInterval(()=>{th-=+$('#e').value*th;show();if(Math.abs(th)<1e-3||Math.abs(th)>50)clearInterval(tm)},350)};
+ $('#rs').onclick=()=>{clearInterval(tm);th=-4;show()};$('#e').oninput=show;show();window._gdclear=()=>clearInterval(tm)},
+boundary(){
+ const pts=[[1,0],[2,0],[2.5,0],[3.2,0],[3.5,1],[4,1],[4.5,1],[5,1],[2.8,1],[3.8,0]];
+ $('#lab').innerHTML=slider('وزن θ₁',0,4,0.1,2,'w')+slider('بایاس θ₀',-12,0,0.5,-6,'b')+`<p>مرز: x = <span class=out id=bx></span> &nbsp; دقت روی نقاط: <span class=out id=ac></span></p><div id=dc></div><p style="color:var(--mu)">نقاط نارنجی: قبول، آبی: مردود (داده فرضی آموزشی).</p>`;
+ const up=()=>{const w=+$('#w').value,b=+$('#b').value;$('#wv').textContent=w;$('#bv').textContent=b;const bx=w?-b/w:NaN;$('#bx').textContent=w?bx.toFixed(2):'—';
+  let ok=pts.filter(([x,y])=>(w*x+b>=0?1:0)===y).length;$('#ac').textContent=ok+'/'+pts.length;
+  const g=plot('d',640,260,[0,6],[-0.2,1.2],[{f:x=>sg(w*x+b),c:'#1e3a5f'}]);let s='';
+  if(w)s+=`<line x1="${g.X(bx)}" x2="${g.X(bx)}" y1="20" y2="235" stroke="#dc2626" stroke-dasharray="6" stroke-width="2"/>`;
+  pts.forEach(([x,y])=>s+=`<circle cx="${g.X(x)}" cy="${g.Y(y)}" r="7" fill="${y?'#ea7a1a':'#1e3a5f'}"/>`);
+  $('#dc').innerHTML=g.svg.replace('</svg>',s+'</svg>')};
+ $('#w').oninput=$('#b').oninput=up;up()}
+};
+// ---------- Lessons ----------
+const F=h=>`<div class=f>${h}</div>`;
+const L=[
+{t:'آشنایی با مسئله Classification',h:`
+<div class=card><h3>Regression در برابر Classification</h3><p>در <b>Regression</b> خروجی یک عدد پیوسته است؛ مثلاً قیمت یک خانه. در <b>Classification</b> خروجی یک برچسب گسسته است؛ مثلاً «اسپم» یا «غیراسپم».</p>
+<div class=two><div class="card k"><b>Regression</b><br>ورودی: متراژ، محله<br>خروجی: ۴٫۲ میلیارد تومان</div><div class="card k"><b>Classification</b><br>ورودی: متن ایمیل<br>خروجی: اسپم / غیراسپم</div></div></div>
+<div class=card><p>فرض کنید اطلاعات ۱۰۰ دانشجو را داریم: ساعت مطالعه و نتیجه (قبول یا مردود). می‌خواهیم برای دانشجوی جدید نتیجه را پیش‌بینی کنیم. چون فقط دو خروجی ممکن است، این یک <b>Binary Classification</b> است.</p>
+<p>کاربردها: تشخیص اسپم، تشخیص بیماری (دارد/ندارد)، تشخیص تقلب بانکی، پیش‌بینی ریزش مشتری.</p>
+<p>Linear Regression هر عددی (حتی منفی یا بزرگ‌تر از ۱) تولید می‌کند، اما برای کلاس‌بندی به <b>احتمالی بین ۰ و ۱</b> نیاز داریم. Logistic Regression دقیقاً همین را فراهم می‌کند.</p></div>`},
+{t:'معرفی Logistic Regression',h:`
+<div class=card><p>Logistic Regression یک الگوریتم <b>Classification</b> است. نام «Regression» از آن می‌آید که ابتدا مانند رگرسیون خطی یک ترکیب خطی از ویژگی‌ها می‌سازد، اما سپس آن را با تابع سیگموید به احتمال تبدیل می‌کند و بر اساس آن کلاس را تعیین می‌کند.</p>
+<div class=flow><span>Input Features</span>→<span>Linear Combination</span>→<span>Sigmoid</span>→<span>Probability</span>→<span>Predicted Class</span></div>
+<p>مثال: ورودی «ساعت مطالعه = ۴» است. مدل آن را در یک وزن ضرب می‌کند، بایاس را اضافه می‌کند، نتیجه را به احتمال قبولی تبدیل می‌کند (مثلاً ۰٫۸۸) و اگر آستانه ۰٫۵ باشد، پیش‌بینی می‌کند «قبول».</p>
+<p><b>وزن‌ها (θ)</b> تعیین می‌کنند هر ویژگی چقدر روی نتیجه اثر دارد. یادگیری مدل یعنی پیدا کردن بهترین وزن‌ها.</p></div>`},
+{t:'تابع Sigmoid',lab:'sigmoid',h:`
+<div class=card>${F('σ(t) = 1 / (1 + e<sup>−t</sup>)')}
+<p>سیگموید هر عدد حقیقی را به بازه (۰، ۱) می‌برد. وقتی t بسیار بزرگ باشد e<sup>−t</sup> به صفر میل می‌کند و خروجی به ۱ نزدیک می‌شود؛ وقتی t بسیار منفی باشد مخرج بزرگ می‌شود و خروجی به ۰ می‌رسد. به همین دلیل خروجی آن برای نمایش احتمال مناسب است. نمودار آن شکل S دارد و σ(0)=0٫۵.</p>
+<table><tr><th>t</th><th>−۲</th><th>−۱</th><th>۰</th><th>۱</th><th>۲</th><th>۳</th></tr><tr><th>σ(t)</th><td>0.1192</td><td>0.2689</td><td>0.5000</td><td>0.7311</td><td>0.8808</td><td>0.9526</td></tr></table></div>
+<div class=card><h3>آزمایشگاه سیگموید</h3><div id=lab></div><p>با اسلایدر مقدار t را تغییر دهید؛ نقطه نارنجی روی منحنی و مقدار خروجی هم‌زمان تغییر می‌کند.</p></div>`},
+{t:'محاسبه احتمال',h:`
+<div class=card>${F('p̂ = σ(θ<sup>T</sup>x)')}
+<p><b>x</b>: بردار ویژگی‌ها (با ۱ برای بایاس) • <b>θ</b>: بردار پارامترها • <b>θ<sup>T</sup>x</b>: ترکیب خطی ویژگی‌ها (همان z) • <b>σ</b>: تابع سیگموید • <b>p̂</b>: احتمال پیش‌بینی‌شده کلاس مثبت.</p>
+<p>مثال: اگر z = ۲ باشد، p̂ = 1/(1+e<sup>−2</sup>) ≈ <b>0.8808</b>. احتمال کلاس منفی برابر 1 − p̂ ≈ 0.1192 است.</p>
+<p>⚠ احتمال ۸۸٪ به معنی تضمین قبولی نیست؛ یعنی مدل تخمین می‌زند که در دانشجویانی با این ویژگی‌ها حدود ۸۸٪ قبول می‌شوند. همچنین احتمال پیش‌بینی‌شده با <b>دقت (Accuracy)</b> مدل تفاوت دارد: دقت، کیفیت کلی مدل روی مجموعه‌ای از نمونه‌هاست.</p></div>`},
+{t:'Threshold و Decision Rule',lab:'thresh',h:`
+<div class=card><p>مدل یک احتمال می‌دهد، اما ما یک تصمیم لازم داریم. قاعده رایج: اگر p̂ ≥ 0٫۵ کلاس ۱ و در غیر این صورت کلاس ۰. آستانه ۰٫۵ فقط یک انتخاب رایج است و قابل تغییر است.</p>
+<p><b>False Positive</b>: مدل «قبول» گفته ولی دانشجو مردود شده. <b>False Negative</b>: مدل «مردود» گفته ولی دانشجو قبول شده. کاهش آستانه معمولاً FP را بیشتر و FN را کمتر می‌کند و افزایش آن برعکس.</p></div>
+<div class=card><h3>آزمایشگاه Threshold</h3><div id=lab></div></div>`},
+{t:'آموزش مدل (Training)',h:`
+<div class=card><p><b>داده آموزشی</b> شامل ویژگی‌ها (مثلاً ساعت مطالعه) و برچسب واقعی (قبول=۱، مردود=۰) است. در <b>پیش‌بینی</b>، θ ثابت است و برای ورودی جدید احتمال می‌سازیم. در <b>آموزش</b>، برعکس، داده را ثابت می‌گیریم و θ را طوری تغییر می‌دهیم که پیش‌بینی‌ها به برچسب‌های واقعی نزدیک شوند.</p>
+<p>برای سنجش «نزدیک بودن» به یک تابع هزینه (Log Loss) نیاز داریم و برای کاهش آن از Gradient Descent استفاده می‌کنیم؛ دو درس بعد همین را می‌بینیم.</p></div>`},
+{t:'Cost Function و Log Loss',lab:'logloss',h:`
+<div class=card>${F('اگر y=1: Cost = −log(p̂) &nbsp;&nbsp; اگر y=0: Cost = −log(1−p̂)')}
+${F('J(θ) = −(1/m) Σ<sub>i=1..m</sub> [ y<sup>(i)</sup> log(p̂<sup>(i)</sup>) + (1−y<sup>(i)</sup>) log(1−p̂<sup>(i)</sup>) ]')}
+<p><b>m</b>: تعداد نمونه‌ها • <b>y<sup>(i)</sup></b>: برچسب واقعی نمونه i • <b>p̂<sup>(i)</sup></b>: احتمال پیش‌بینی‌شده. برای هر نمونه فقط یکی از دو جمله فعال است.</p>
+<p>مثال (لگاریتم طبیعی): y=1 و p̂=0.99 ← Cost = −ln(0.99) ≈ <b>0.0101</b> (تقریباً بدون جریمه). y=1 و p̂=0.01 ← Cost = −ln(0.01) ≈ <b>4.605</b> (جریمه سنگین برای پیش‌بینی مطمئن ولی غلط).</p></div>
+<div class=card><h3>آزمایشگاه Log Loss</h3><div id=lab></div></div>`},
+{t:'Gradient Descent',lab:'gd',h:`
+<div class=card>${F('θ<sub>new</sub> = θ<sub>old</sub> − η · ∂J(θ)/∂θ')}
+${F('∂J(θ)/∂θ<sub>j</sub> = (1/m) Σ ( p̂<sup>(i)</sup> − y<sup>(i)</sup> ) x<sub>j</sub><sup>(i)</sup>')}
+<p>گرادیان نشان می‌دهد هزینه در کدام جهت سریع‌تر زیاد می‌شود؛ ما خلاف آن جهت حرکت می‌کنیم. <b>η (Learning Rate)</b> اندازه هر گام است: خیلی کوچک ← کند؛ خیلی بزرگ ← نوسان یا واگرایی. Log Loss محدب است، پس Gradient Descent به کمینه سراسری می‌رسد.</p>
+<p>در <b>Batch</b> گرادیان از کل داده، در <b>Stochastic</b> از یک نمونه و در <b>Mini-Batch</b> از زیرمجموعه کوچکی از داده محاسبه می‌شود.</p></div>
+<div class=card><h3>انیمیشن حرکت به سمت کمینه</h3><p>نمودار زیر یک تابع هزینه ساده (J = θ²/2) است، نه Log Loss واقعی؛ برای دیدن اثر η. مقدار η بالای ۱ را امتحان کنید.</p><div id=lab></div></div>`},
+{t:'Decision Boundary',lab:'boundary',h:`
+<div class=card><p>مرز تصمیم‌گیری جایی است که مدل بین دو کلاس مردد است؛ با آستانه ۰٫۵ یعنی σ(z)=0.5 یا z=0. مثال: z = −6 + 2x ← −6 + 2x = 0 ← <b>x = 3</b>. یعنی سمت راست مرز کلاس ۱ و سمت چپ کلاس ۰ است. با دو ویژگی مرز یک خط و با آستانه متفاوت مرز جابه‌جا می‌شود.</p>
+<table><tr><th>ساعت مطالعه</th><th>۱</th><th>۲</th><th>۳</th><th>۴</th><th>۵</th></tr><tr><th>z</th><td>−4</td><td>−2</td><td>0</td><td>2</td><td>4</td></tr><tr><th>p̂</th><td>0.018</td><td>0.119</td><td>0.500</td><td>0.881</td><td>0.982</td></tr></table></div>
+<div class=card><h3>آزمایشگاه Decision Boundary</h3><div id=lab></div></div>`},
+{t:'چند ویژگی',h:`
+<div class=card><p>مثال: x₁ = ساعت مطالعه، x₂ = حضور در کلاس، x₃ = معدل ترم قبل.</p>
+${F('z = θ<sub>0</sub> + θ<sub>1</sub>x<sub>1</sub> + θ<sub>2</sub>x<sub>2</sub> + θ<sub>3</sub>x<sub>3</sub> &nbsp;⇒&nbsp; p̂ = σ(z)')}
+<p>هر θ نشان‌دهنده اثر یک ویژگی است: θ مثبت یعنی افزایش آن ویژگی احتمال کلاس ۱ را بالا می‌برد. این وزن‌ها با همان Gradient Descent و Log Loss یاد گرفته می‌شوند. برای مقایسه عادلانه وزن‌ها بهتر است ویژگی‌ها استانداردسازی شوند.</p></div>`},
+{t:'Softmax Regression',h:`
+<div class=card><p>برای بیش از دو کلاس (مثلاً سه گونه گل Iris) به هر کلاس یک امتیاز s<sub>k</sub> می‌دهیم و با Softmax آن‌ها را به احتمال تبدیل می‌کنیم.</p>
+${F('p̂<sub>k</sub> = exp(s<sub>k</sub>) / Σ<sub>j</sub> exp(s<sub>j</sub>)')}
+<table><tr><th>کلاس</th><th>Setosa</th><th>Versicolor</th><th>Virginica</th><th>مجموع</th></tr><tr><th>احتمال (مثال فرضی)</th><td>80%</td><td>15%</td><td>5%</td><td>100%</td></tr></table>
+<p>مجموع احتمال‌ها همیشه ۱ است و کلاس با بیشترین احتمال (Setosa) انتخاب می‌شود.</p></div>`},
+{t:'جمع‌بندی و محدودیت‌ها',h:`
+<div class=card><div class=flow><span>داده</span>↓<span>ترکیب خطی</span>↓<span>Sigmoid</span>↓<span>احتمال</span>↓<span>Threshold</span>↓<span>کلاس</span></div>
+<table><tr><th></th><th>Logistic</th><th>Softmax</th></tr><tr><td>تعداد کلاس</td><td>۲</td><td>بیش از ۲</td></tr><tr><td>تابع فعال‌سازی</td><td>Sigmoid</td><td>Softmax</td></tr><tr><td>خروجی</td><td>یک احتمال</td><td>بردار احتمال (مجموع ۱)</td></tr></table>
+<h3>محدودیت‌ها</h3><p>مرز تصمیم خطی است و داده غیرخطی را مستقیم نمی‌تواند جدا کند؛ به ویژگی‌های مناسب و در صورت وجود هم‌خطی/اورفیتینگ، به Regularization نیاز دارد؛ و احتمال‌های خروجی لزوماً کالیبره نیستند.</p></div>`},
+{t:'پیاده‌سازی Python',h:`
+<div class=card><p>این کد دیتاست فرضی قبولی را می‌سازد، مدل را آموزش می‌دهد و پیش‌بینی می‌کند (نصب: <code>pip install scikit-learn pandas</code>).</p>
+<pre>import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, confusion_matrix
+
+# داده فرضی (غیرواقعی) ساعت مطالعه و نتیجه
+df = pd.DataFrame({
+  "study_hours":[1,2,2,3,3,4,4,5,5,6,6,7,7,8,9,2,3,5,8,9],
+  "passed":     [0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,1,1,1]})
+X, y = df[["study_hours"]], df["passed"]
+
+# جدا کردن داده آموزش و آزمون (stratify = حفظ نسبت کلاس‌ها)
+X_tr, X_te, y_tr, y_te = train_test_split(
+    X, y, test_size=0.25, random_state=42, stratify=y)
+
+model = LogisticRegression()
+model.fit(X_tr, y_tr)               # آموزش: یادگیری θ
+
+new = pd.DataFrame({"study_hours":[4]})
+print(model.predict(new))           # کلاس پیش‌بینی‌شده
+print(model.predict_proba(new))     # [P(کلاس0), P(کلاس1)]
+
+pred = model.predict(X_te)
+print(accuracy_score(y_te, pred))   # دقت روی داده آزمون
+print(confusion_matrix(y_te, pred)) # ماتریس درهم‌ریختگی</pre>
+<p>نکته: خروجی دقیق به نسخه کتابخانه وابسته است؛ کد را اجرا کنید و خروجی خودتان را ببینید. predict_proba برای هر نمونه دو احتمال با مجموع ۱ برمی‌گرداند.</p></div>`},
+{t:'آزمون',quiz:1,h:`<div id=quiz></div>`},
+{t:'منابع',h:`<div class=card><ul>
+<li>Aurélien Géron, <i>Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow</i>, 3rd Edition (2022), Chapter 4: Training Models.</li>
+<li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html" target=_blank rel=noopener>Scikit-Learn: LogisticRegression</a></li>
+<li><a href="https://statquest.org/" target=_blank rel=noopener>StatQuest (Josh Starmer): Logistic Regression</a></li></ul>
+<p style="color:var(--mu)">لینک‌ها در این محیط آزمایش نشده‌اند؛ پیش از کلاس بررسی کنید.</p></div>`}
+];
+const Q=[
+['خروجی سیگموید در چه بازه‌ای است؟',['(−∞, ∞)','(0, 1)','[−1, 1]','[0, 100]'],1,'سیگموید همیشه مقداری بین ۰ و ۱ می‌دهد.'],
+['σ(0) چقدر است؟',['0','1','0.5','0.88'],2,'1/(1+e⁰)=1/2=0.5'],
+['با z=2 احتمال تقریبی کلاس مثبت چند است؟',['0.12','0.50','0.88','0.99'],2,'1/(1+e⁻²)≈0.8808'],
+['Log Loss برای y=1 و p̂=0.01 چگونه است؟',['بسیار کم','صفر','بسیار زیاد','منفی'],2,'−ln(0.01)≈4.6؛ پیش‌بینی مطمئن ولی غلط جریمه سنگین دارد.'],
+['برای z=−6+2x مرز تصمیم (آستانه ۰٫۵) کجاست؟',['x=2','x=3','x=6','x=0.5'],1,'−6+2x=0 ⇒ x=3'],
+['برای طبقه‌بندی چندکلاسه از چه تابعی استفاده می‌شود؟',['Sigmoid','ReLU','Softmax','Log'],2,'Softmax امتیازها را به احتمال با مجموع ۱ تبدیل می‌کند.']
+];
+// ---------- Render ----------
+let cur=-1;
+function nav(){let h=`<h1><a href="/" style="padding:0;display:inline">Machine Learning Academy</a></h1><small>آموزش تعاملی یادگیری ماشین</small><div class=bar><i style="width:${Object.keys(done).length/L.length*100}%"></i></div><a data-i=-1 class="${cur<0?'on':''}">🏠 صفحه اصلی</a><div class=g>Logistic Regression</div>`;
+ L.forEach((l,i)=>h+=`<a data-i=${i} class="${i==cur?'on':''} ${done[i]?'done':''}">${i+1}. ${l.t}</a>`);
+ h+=`<div class=g>به‌زودی</div>`+['Linear Regression','Decision Trees','SVM','K-Means','PCA','Neural Networks'].map(x=>`<span class=chip>${x}</span>`).join('');
+ $('#side').innerHTML=h;$('#side').querySelectorAll('a').forEach(a=>a.onclick=()=>go(+a.dataset.i))}
+function go(i){if(window._gdclear)window._gdclear();cur=i;if(i>=0)done[i]=1;save();nav();const m=$('#main');
+ const top=`<div style="display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap"><button class=s onclick="go(-1)">فهرست</button><button class=s onclick="document.body.classList.toggle('pres')">🖥 حالت کلاس (P)</button></div>`;
+ if(i<0){m.innerHTML=top+`<h2 style="font-size:2.3em">آموزش تعاملی یادگیری ماشین</h2><p>از درک مفاهیم پایه تا پیاده‌سازی الگوریتم‌های هوشمند با مثال‌های واقعی و آزمایش عملی</p>
+ <div class="card k"><span class=chip style="background:var(--orl);color:var(--or)">الگوریتم این هفته</span><h3>Logistic Regression — رگرسیون لجستیک</h3><p>آموزش مفهومی، ریاضی و عملی • ${L.length} بخش با ۵ آزمایشگاه تعاملی</p><button onclick="go(0)">ورود به آموزش</button> <a href="/jozve" style="display:inline-block;background:#fff;color:#ea7a1a;border:1px solid #ea7a1a;border-radius:9px;padding:4px 16px;text-decoration:none;margin-inline-start:8px">📘 جزوه کامل رگرسیون لجستیک</a></div>
+ <div class=two><div class=card><h3>Supervised</h3>Linear Regression، Logistic Regression ✓، Decision Trees، Random Forest، SVM، KNN، Naive Bayes، Ensemble</div><div class=card><h3>Unsupervised</h3>K-Means، DBSCAN، Hierarchical، PCA، Anomaly Detection</div><div class=card><h3>سایر مباحث</h3>Evaluation، Overfitting، Regularization، Gradient Descent، Neural Networks، Deep Learning</div></div><p style="color:var(--mu)">همه مباحث به‌جز Logistic Regression در دست توسعه‌اند (به‌زودی).</p>`;return}
+ const l=L[i];m.innerHTML=top+`<div class=bar><i style="width:${(i+1)/L.length*100}%"></i></div><small>درس ${i+1} از ${L.length}</small><h2>${l.t}</h2>${l.h}<div class=nav><button ${i?'':'disabled'} onclick="go(${i-1})">→ قبلی</button><button ${i<L.length-1?'':'disabled'} onclick="go(${i+1})">بعدی ←</button></div>`;
+ if(l.lab)labs[l.lab]();if(l.quiz)quiz();window.scrollTo(0,0)}
+function quiz(){let sc=0,n=0;const el=$('#quiz');
+ el.innerHTML=Q.map((q,i)=>`<div class=card><b>${i+1}. ${q[0]}</b>${q[1].map((o,j)=>`<button class="opt" data-q=${i} data-o=${j}>${o}</button>`).join('')}<p id=ex${i} style="color:var(--mu)"></p></div>`).join('')+`<div class=card><b id=fs>نمره: ۰ از ${Q.length}</b> <button class=s onclick="go(${L.length-2})">شروع مجدد</button></div><div class=card><b>تمرین کدنویسی:</b> (۱) در کد درس قبل، test_size را تغییر دهید و اثر آن را روی Accuracy ببینید. (۲) با predict_proba و آستانه ۰٫۳ خودتان کلاس را تعیین کنید.</div>`;
+ el.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{const i=+b.dataset.q;if(b.parentNode.dataset.d)return;b.parentNode.dataset.d=1;const ok=+b.dataset.o===Q[i][2];n++;if(ok)sc++;
+  b.classList.add(ok?'ok':'no');b.parentNode.querySelectorAll('.opt')[Q[i][2]].classList.add('ok');$('#ex'+i).textContent=(ok?'درست! ':'نادرست. ')+Q[i][3];$('#fs').textContent=`نمره: ${sc} از ${Q.length}`})}
+document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
+ if(e.key==='ArrowLeft'&&cur<L.length-1)go(cur+1);if(e.key==='ArrowRight'&&cur>0)go(cur-1);
+ if(e.key==='p'||e.key==='P')document.body.classList.toggle('pres')});
+nav();go(-1);
+</script>
+</body>
+</html>
